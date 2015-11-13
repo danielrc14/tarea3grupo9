@@ -1,9 +1,3 @@
-<?php
-  //session_start();
-  if (isset($_SESSION["user"])){
-    header("location:./welcome2.php");
-  }
-?>
 <html lang="es">
   <head>
     <title>Bienvenido</title>
@@ -56,8 +50,9 @@
 			?>
 		</div>
 	</div>
-    <!-- Cambiar esto a otra hueá -->
-    <a href="registro.php">Regístrate</a>
+    <?php
+    echo anchor('controlador/registro', 'Regístrate', '');
+    ?>
 </div>
       <?php
         $error = '<span>Fallo en el inicio de sesión.</span>';

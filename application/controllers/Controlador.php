@@ -24,6 +24,21 @@ class Controlador extends CI_Controller {
 		}
 	}
 
+	public function registro(){
+		$this->load->view('registro');
+	}
+
+	public function profile(){
+		if($this->session->userdata('user')){
+			$this->load->view('base');
+			$this->load->view('profile');
+		}
+		else {
+			$this->load->view('inicio');
+			echo "Para acceder a esta página, debe iniciar sesión";
+		}
+	}
+
 	public function agregar_usuario(){
 		$this->form_validation->set_rules('nombre', 'Nombre', 'required', array('required' => 'Debe ingresar un %s.'));
 		$this->form_validation->set_rules('username', 'Nombre de usuario', 'required', array('required' => 'Debe ingresar un %s.'));
@@ -31,12 +46,10 @@ class Controlador extends CI_Controller {
 		$this->form_validation->set_rules('email', 'Correo electrónico', 'required', array('required' => 'Debe ingresar un %s.'));
 		if($this->form_validation->run() == FALSE){
 			//Agregar mensaje de error
-			$this->load->view('header');
-			$this->load->view('inicio');
+			$this->load->view('registro');
+			echo "Registro fallido";
 		}
 		else{
-			//$data=array('nombre'=>$nombre, 'apellido'=>$apellido, 'avatar'=>$avatar, 'email'=$email,'username'=>$username,
-      //'password'=>$password, 'status'=>$status, 'registro'=>'NOW()', 'ultima_sesion'=>'NOW()');
 			$nombre = $this-> input ->post('nombre');
 			$apellido = $this-> input ->post('apellido');
 			$avatar = $this-> input ->post('avatar');
@@ -45,16 +58,12 @@ class Controlador extends CI_Controller {
 			$password = $this-> input ->post('password');
 			$status = 0;
 			if($this->modelo->agregar($nombre, $apellido, $avatar, $email, $username, $password, $status)){
-				$this->load->view('header');
-				//Ver qué views usar
-				$data=array('username'=>$username);
-				$this->load->view('ingresado', $data);
+				$this->load->view('inicio');
+				echo "Registro exitoso";
 			}
 			else{
-				//Ver qué views usar
-				$this->load->view('header');
-				$this->load->view('fallo');
-				$this->load->view('inicio');
+				$this->load->view('registro');
+				echo "Registro fallido";
 			}
 		}
 	}
@@ -72,13 +81,12 @@ class Controlador extends CI_Controller {
 			$password = $this-> input ->post('password');
 			$resultado = $this->modelo->login($username,$password);
 			if($resultado != FALSE){
-				$data = array('nombre' => $resultado->nombre, 'apellido' => $resultado->apellido);
-				//Ver qué views
-				$this->load->view('base');
-				$this->load->view('welcome2', $data);
 				//Iniciar sesión
-				$newdata = array('user'=>$username, 'pass'=>$password);
+				$newdata = array('user'=>$username, 'pass'=>$password, 'nombre' => $resultado->nombre, 'apellido' => $resultado->apellido);
 				$this->session->set_userdata($newdata);
+				//Cargar vistas
+				$this->load->view('base');
+				$this->load->view('welcome2');
 			}
 			else{
 				//Ver qué views
@@ -91,6 +99,8 @@ class Controlador extends CI_Controller {
 	public function close_session(){
 		$this->session->unset_userdata('user');
 		$this->session->unset_userdata('pass');
+		$this->session->unset_userdata('nombre');
+		$this->session->unset_userdata('apellido');
 		$this->load->view('inicio');
 	}
 }

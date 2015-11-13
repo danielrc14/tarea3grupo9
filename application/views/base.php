@@ -1,19 +1,3 @@
-<?php
-/*
-if(!isset($_SESSION["user"])){
-  if(checkLogIn($_POST, $conn)){
-    $_SESSION["user"] = $_POST["username"];
-    $_SESSION["pass"] = $_POST["pass"];
-    $_SESSION["error"] = "no";
-  }
-  else{
-    $_SESSION["error"] = "error";
-    header("Location: index.php");
-  }
-}
-//Pasar a controlador
-*/
-?>
 <html lang="es">
   <head>
     <title>Bienvenido</title>
@@ -39,7 +23,7 @@ if(!isset($_SESSION["user"])){
       </div>
       <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-              <li><a href="profile.php">Perfil</a></li>
+              <li><?php echo anchor('controlador/profile', 'Perfil', ''); ?></li>
               <li><a href="listaTutorias.php">Tutorías</a></li>
               <li><a href="quienesSomos.php">Quienes somos</a></li>
               <li><a href="contacto.php">Contacto</a></li>

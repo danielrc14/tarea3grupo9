@@ -37,5 +37,14 @@ Class Modelo extends CI_Model{
 			return TRUE;
 		}
 	}
+
+	function get_user($username){
+		$this->db->select('*');
+		$this->db->from('users');
+		$this->db->where('username', $username);
+		$this->db->limit(1);
+		$query = $this->db->get();
+		return $query->first_row();
+	}
 }
 ?>
