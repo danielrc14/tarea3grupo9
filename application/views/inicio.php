@@ -8,8 +8,10 @@
   <head>
     <title>Bienvenido</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css"/>
+    <?php
+    echo link_tag('css/bootstrap.min.css');
+    echo link_tag('css/bootstrap-theme.min.css');
+    ?>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <style>
         body{

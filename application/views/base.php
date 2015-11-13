@@ -33,9 +33,9 @@ if(!isset($_SESSION["user"])){
   <!-- NAVBAR -->
   <nav class="navbar navbar-default">
       <div class="navbar-header">
-          <a class="navbar-brand" href="welcome2.php">
-              <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-          </a>
+          <?php
+          echo anchor('controlador/index', '<span class="glyphicon glyphicon-home" aria-hidden="true"></span>', 'class="navbar-brand"');
+          ?>
       </div>
       <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -53,7 +53,10 @@ if(!isset($_SESSION["user"])){
               </button>
           </form>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="./closeSession.php">Cerrar sesión</a></li>
+            <li>
+              <?php
+              echo anchor('controlador/close_session', 'Cerrar sesión', '');
+              ?></li>
           </ul>
       </div>
   </nav>

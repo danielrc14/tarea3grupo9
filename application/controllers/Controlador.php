@@ -10,11 +10,18 @@ class Controlador extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->helper('html');
 		$this->load->library('form_validation');
+		$this->load->library('session');
 		$this->load->database();
 	}
 
 	public function index(){
-		$this->load->view('inicio');
+		if($this->session->userdata('user')){
+			$this->load->view('base');
+			$this->load->view('welcome2');
+		}
+		else {
+			$this->load->view('inicio');
+		}
 	}
 
 	public function agregar_usuario(){
@@ -57,8 +64,8 @@ class Controlador extends CI_Controller {
 		$this->form_validation->set_rules('password', 'Contraseña', 'required', array('required' => 'Debe ingresar una %s.'));
 		if($this->form_validation->run() == FALSE){
 			//Mensaje de fallo
-			$this->load->view('header');
 			$this->load->view('inicio');
+			echo "Debe ingresar usuario y contraseña";
 		}
 		else{
 			$username = $this-> input ->post('username');
@@ -69,12 +76,21 @@ class Controlador extends CI_Controller {
 				//Ver qué views
 				$this->load->view('base');
 				$this->load->view('welcome2', $data);
+				//Iniciar sesión
+				$newdata = array('user'=>$username, 'pass'=>$password);
+				$this->session->set_userdata($newdata);
 			}
 			else{
 				//Ver qué views
-				echo "holi";
 				$this->load->view('inicio');
+				echo "Nombre de usuario o contraseña incorrectos";
 			}
 		}
+	}
+
+	public function close_session(){
+		$this->session->unset_userdata('user');
+		$this->session->unset_userdata('pass');
+		$this->load->view('inicio');
 	}
 }
