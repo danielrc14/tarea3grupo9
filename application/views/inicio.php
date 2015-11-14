@@ -54,14 +54,4 @@
     echo anchor('controlador/registro', 'Regístrate', '');
     ?>
 </div>
-      <?php
-        $error = '<span>Fallo en el inicio de sesión.</span>';
-
-        if (isset($_SESSION["error"]) && $_SESSION["error"]==="error"){
-          echo $error;
-          session_destroy();
-        }
-      ?>
     </div>
-  </body>
-</html>

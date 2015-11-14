@@ -24,9 +24,9 @@
       <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
               <li><?php echo anchor('controlador/profile', 'Perfil', ''); ?></li>
-              <li><a href="listaTutorias.php">Tutorías</a></li>
-              <li><a href="quienesSomos.php">Quienes somos</a></li>
-              <li><a href="contacto.php">Contacto</a></li>
+              <li><?php echo anchor('controlador/lista_tutorias', 'Tutorías', ''); ?></li>
+              <li><?php echo anchor('controlador/quienes_somos', 'Quienes somos', ''); ?></li>
+              <li><?php echo anchor('controlador/contacto', 'Contacto', ''); ?></li>
           </ul>
           <form class="navbar-form navbar-right" role="search">
               <div class="form-group">

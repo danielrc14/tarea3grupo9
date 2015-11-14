@@ -11,18 +11,6 @@
         </div>
 
         <div class='col-lg-3' style=''>
-            <a href='editarUsuario.php'><button class='btn btn-default' style='float: right;'>Editar perfil</button></a>
-        </div>";
+            ".anchor('controlador/editar_perfil', '<button class="btn btn-default" style="float: right;">Editar perfil</button>', '')."</div>";
       ?>
   </div>
-  </body>
-</html>
-<?php
-/*
-if(isset($_REQUEST['submit'])!='')
-{
-    $sql = "UPDATE Users SET lastname='Doe' WHERE id=2";
-}
-mysqli_close($conn);
-*/
-?>

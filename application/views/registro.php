@@ -77,5 +77,3 @@
           echo anchor('controlador/index', 'Volver al inicio', '');
           ?>
         </div>
-    </body>
-</html>
