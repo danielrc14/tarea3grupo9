@@ -1,4 +1,5 @@
-Vamos a chequear que el modelo cumpla los criterios de 3NF partiendo desde abajo.
+No se modificó la base de datos, porque ya estaba en 3NF.
+A continuación se justifica esto, chequeando que la base de datos cumpla con los criterios de las formas normales correspondientes.
 
 Criterios 1NF:
 
