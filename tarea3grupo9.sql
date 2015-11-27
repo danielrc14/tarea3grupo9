@@ -52,3 +52,10 @@ INSERT INTO `Users` (`nombre`, `apellido`, `avatar`, `email`, `username`, `passw
 ('user08', 'user08', NULL, 'user08@xx.cl', 'user08', 'password', 0, NOW(), NOW()),
 ('user09', 'user09', NULL, 'user09@xx.cl', 'user09', 'password', 0, NOW(), NOW()),
 ('user10', 'user10', NULL, 'user10@xx.cl', 'user10', 'password', 0, NOW(), NOW());
+
+INSERT INTO `Tutorias` (`titulo`, `texto`, `fecha`, `cupos`, `tag`, `user`) VALUES
+('Tutoria test', 'Esta es una tutoría test', NOW(), 20, 'test', 1);
+
+INSERT INTO `Reviews` (`review`, `fecha`, `poster`, `tutoria`) VALUES
+('Esta tutoría es muy mala, 0/10', NOW(), 2, 1),
+('Esta tutoría es muy buena, 10/10', NOW(), 3, 1);

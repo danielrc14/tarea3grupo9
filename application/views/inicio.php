@@ -42,7 +42,7 @@
         echo '</div>';
         echo '<div class="control-group">';
         echo '<div class="controls">';
-        echo form_submit('', 'Iniciar Sesión');
+        echo '<button class="btn btn-default" type="submit">Iniciar sesión</button>';
         echo '</div>';
         echo '</div>';
         echo '</fieldset>';

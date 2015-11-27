@@ -98,11 +98,48 @@ class Controlador extends CI_Controller {
 		}
 	}
 
+	public function detalle_tutoria(){
+		if($this->session->userdata('user')){
+			$id=intval($this->uri->segment(3, 0));
+			$row = $this->modelo->get_tutoria($id);
+			if($row==false){
+				$this->load->view('base');
+				$this->load->view('welcome2');
+			}
+			else{
+				$this->load->view('base');
+				$this->load->view('detalle_tutoria', $row);
+			}
+		}
+		else {
+			$this->load->view('inicio');
+			$data=array('mensaje'=>'Para acceder a esta página, debe iniciar sesión', 'color'=>'red');
+			$this->load->view('mensaje', $data);
+		}
+	}
+
+	public function agregar_review(){
+		if($this->session->userdata('user')){
+			$tutoria=intval($this->uri->segment(3, 0));
+			$review_text=$this->input->post('review_text');
+			$user=$this->modelo->get_user($_SESSION['user']);
+			$this->modelo->add_review($tutoria, $review_text, $user->id);
+
+			$this->load->view('base');
+			$row = $this->modelo->get_tutoria($tutoria);
+			$this->load->view('detalle_tutoria', $row);
+		}
+		else {
+			$this->load->view('inicio');
+			$data=array('mensaje'=>'Para acceder a esta página, debe iniciar sesión', 'color'=>'red');
+			$this->load->view('mensaje', $data);
+		}
+	}
+
 	public function agregar_usuario(){
 		$this->form_validation->set_rules('nombre', 'Nombre', 'required', array('required' => 'Debe ingresar un %s.'));
 		$this->form_validation->set_rules('apellido', 'Apellido', 'required', array('required' => 'Debe ingresar un %s.'));
 		$this->form_validation->set_rules('email', 'Correo electrónico', 'required', array('required' => 'Debe ingresar un %s.'));
-		$this->form_validation->set_rules('avatar', 'Avatar', 'required', array('required' => 'Debe ingresar un %s.'));
 		$this->form_validation->set_rules('username', 'Nombre de usuario', 'required', array('required' => 'Debe ingresar un %s.'));
 		$this->form_validation->set_rules('password', 'Contraseña', 'required', array('required' => 'Debe ingresar una %s.'));
 		if($this->form_validation->run() == FALSE){
@@ -113,12 +150,29 @@ class Controlador extends CI_Controller {
 		else{
 			$nombre = $this-> input ->post('nombre');
 			$apellido = $this-> input ->post('apellido');
-			$avatar = $this-> input ->post('avatar');
 			$email = $this-> input ->post('email');
 			$username = $this-> input ->post('username');
 			$password = $this-> input ->post('password');
 			$status = 0;
-			if($this->modelo->agregar($nombre, $apellido, $avatar, $email, $username, $password, $status)){
+			if($this->modelo->usuario_disponible($username)){
+				$config['upload_path']='./avatars/';
+				$config['allowed_types']='gif|jpg|png';
+				$config['file_name']='test';
+				$this->load->library('upload', $config);
+				if ( !$this->upload->do_upload('avatar')){
+					$this->load->view('registro');
+					$data=array('mensaje'=>$this->upload->display_errors(), 'color'=>'red');
+					$this->load->view('mensaje', $data);
+					return;
+	      }
+				$this->modelo->agregar($nombre, $apellido, $email, $username, $password, $status);
+				$row=$this->modelo->get_user($username);
+				unlink(glob('./avatars/test.*')[0]);
+				$config['file_name']='avatar'.$row->id;
+				$this->upload->initialize($config);
+				$this->upload->do_upload('avatar');
+				$this->modelo->set_avatar($username, $this->upload->file_name);
+
 				$this->load->view('inicio');
 				$data=array('mensaje'=>'Registro exitoso', 'color'=>'green');
 				$this->load->view('mensaje', $data);
@@ -135,7 +189,6 @@ class Controlador extends CI_Controller {
 		$this->form_validation->set_rules('nombre', 'Nombre', 'required', array('required' => 'Debe ingresar un %s.'));
 		$this->form_validation->set_rules('apellido', 'Apellido', 'required', array('required' => 'Debe ingresar un %s.'));
 		$this->form_validation->set_rules('email', 'Correo electrónico', 'required', array('required' => 'Debe ingresar un %s.'));
-		$this->form_validation->set_rules('avatar', 'Avatar', 'required', array('required' => 'Debe ingresar un %s.'));
 		$this->form_validation->set_rules('username', 'Nombre de usuario', 'required', array('required' => 'Debe ingresar un %s.'));
 		$this->form_validation->set_rules('password', 'Contraseña', 'required', array('required' => 'Debe ingresar una %s.'));
 		if($this->form_validation->run()==FALSE){
@@ -145,14 +198,30 @@ class Controlador extends CI_Controller {
 			$this->load->view('mensaje', $data);
 		}
 		else{
+			$row=$this->modelo->get_user($_SESSION['user']);
+			if(sizeof(glob('./avatars/avatar'.$row->id.'.*'))!=0)
+				unlink(glob('./avatars/avatar'.$row->id.'.*')[0]);
+			$config['upload_path']='./avatars/';
+			$config['allowed_types']='gif|jpg|png';
+			$config['file_name']='avatar'.$row->id;
+			$this->load->library('upload', $config);
+			if ( !$this->upload->do_upload('avatar')){
+				$this->load->view('base');
+				$this->load->view('editar_perfil');
+				$data=array('mensaje'=>$this->upload->display_errors(), 'color'=>'red');
+				$this->load->view('mensaje', $data);
+				return;
+      }
+
 			$data = array(
 				'nombre' => $this-> input ->post('nombre'),
 				'apellido' => $this-> input ->post('apellido'),
-				'avatar' => $this-> input ->post('avatar'),
+				'avatar' => $this->upload->file_name,
 				'email' => $this-> input ->post('email'),
 				'username' => $this-> input ->post('username'),
 				'password' => $this-> input ->post('password')
 			);
+
 			if($this->modelo->edit_user($data)!=FALSE){
 				$newdata = array('user'=>$data['username'], 'pass'=>$data['password'], 'nombre'=>$data['nombre'], 'apellido'=>$data['apellido']);
 				$this->session->set_userdata($newdata);
@@ -171,33 +240,38 @@ class Controlador extends CI_Controller {
 	}
 
 	public function login(){
-		$this->form_validation->set_rules('username', 'Nombre de usuario', 'required', array('required' => 'Debe ingresar un %s.'));
-		$this->form_validation->set_rules('password', 'Contraseña', 'required', array('required' => 'Debe ingresar una %s.'));
-		if($this->form_validation->run() == FALSE){
-			$this->load->view('inicio');
-			$data=array('mensaje'=>'Debe ingresar usuario y contraseña', 'color'=>'red');
-			$this->load->view('mensaje', $data);
+		if($this->session->userdata('user')){
+			$this->load->view('base');
+			$this->load->view('welcome2');
 		}
 		else{
-			$username = $this-> input ->post('username');
-			$password = $this-> input ->post('password');
-			$resultado = $this->modelo->login($username,$password);
-			if($resultado != FALSE){
-				//Iniciar sesión
-				$days = $this->modelo->get_dias_ultima_sesion($username);
-				$newdata = array('user'=>$username, 'pass'=>$password, 'nombre' => $resultado->nombre, 'apellido' => $resultado->apellido, 'days' => $days);
-				$this->session->set_userdata($newdata);
-				//Actualizar última sesión
-				$this->modelo->set_ultima_sesion($username);
-				//Cargar vistas
-				$this->load->view('base');
-				$this->load->view('welcome2');
+			$this->form_validation->set_rules('username', 'Nombre de usuario', 'required', array('required' => 'Debe ingresar un %s.'));
+			$this->form_validation->set_rules('password', 'Contraseña', 'required', array('required' => 'Debe ingresar una %s.'));
+			if($this->form_validation->run() == FALSE){
+				$this->load->view('inicio');
+				$data=array('mensaje'=>'Debe ingresar usuario y contraseña', 'color'=>'red');
+				$this->load->view('mensaje', $data);
 			}
 			else{
-				//Ver qué views
-				$this->load->view('inicio');
-				$data=array('mensaje'=>'Nombre de usuario o contraseña incorrectos', 'color'=>'red');
-				$this->load->view('mensaje', $data);
+				$username = $this-> input ->post('username');
+				$password = $this-> input ->post('password');
+				$resultado = $this->modelo->login($username,$password);
+				if($resultado != FALSE){
+					//Iniciar sesión
+					$days = $this->modelo->get_dias_ultima_sesion($username);
+					$newdata = array('user'=>$username, 'pass'=>$password, 'nombre' => $resultado->nombre, 'apellido' => $resultado->apellido, 'days' => $days);
+					$this->session->set_userdata($newdata);
+					//Actualizar última sesión
+					$this->modelo->set_ultima_sesion($username);
+					//Cargar vistas
+					$this->load->view('base');
+					$this->load->view('welcome2');
+				}
+				else{
+					$this->load->view('inicio');
+					$data=array('mensaje'=>'Nombre de usuario o contraseña incorrectos', 'color'=>'red');
+					$this->load->view('mensaje', $data);
+				}
 			}
 		}
 	}

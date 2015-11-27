@@ -2,7 +2,7 @@
   $row = $this->modelo->get_user($_SESSION['user']);
 
   echo "<div class='col-lg-6'>";
-    echo form_open('controlador/editar_usuario');
+    echo form_open_multipart('controlador/editar_usuario');
     echo "
       <h1>Editar datos usuario</h1>
       <br>
@@ -70,8 +70,7 @@
       <tr>
       <td></td>
       <td></td>
-      <td><div class='form-group'>
-                          ".form_submit('', 'Enviar')."</div></td>
+      <td><div class='form-group'>".form_submit('', 'Enviar')."</div></td>
       </tr>
       </table>
     </form>

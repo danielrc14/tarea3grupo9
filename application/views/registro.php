@@ -17,7 +17,7 @@
         <h1 style="text-align: center;">Formulario de registro</h1>
         <div class="col-lg-4">
             <?php
-            echo form_open('controlador/agregar_usuario');
+            echo form_open_multipart('controlador/agregar_usuario');
             echo '<div class="control-group">';
             echo form_label('Nombre:', 'nombre');
             $data_nombre= array('type'=>'text', 'name'=>'nombre', 'class'=>'form-control');
@@ -67,7 +67,7 @@
             echo br(1);
 
             echo '<div class="control-group">';
-            echo form_submit('', 'Registrarse');
+            echo '<button class="btn btn-default" type="submit">Registrarse</button>';
             echo '</div>';
             echo form_close();
             ?>
